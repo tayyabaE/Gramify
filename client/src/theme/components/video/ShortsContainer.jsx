@@ -128,7 +128,7 @@ const ShortsContainer = ({ video, index, userInteracted }) => {
                     <div className='absolute w-full p-5 left-1/2 -translate-x-1/2 bottom-0 bg-linear-0 to-primary-100/0 from-primary-100/90 from-65%'>
                         <h3 className='text-primary-500 text-xl font-bold mt-5'>{ "@"+video.creator.username }</h3>
                         <h3 className='text-black text-lg mt-2'>{ video.title }</h3>
-                        <p className='text-balck mt-1 w-[70%]'>{ renderDescription(video.description) }</p>
+                        <p className='text-black/65 mt-1 w-[70%]'>{ renderDescription(video.description) }</p>
                     </div>
                     <Meta video={ video } setResponse={ setResponse } triggerCommentSection={ triggerCommentSection } />
                 </div>

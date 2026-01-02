@@ -18,17 +18,17 @@ const FormField = ({ label, name, id, placeholder, type, fieldType, value, optio
                 fieldType == "input" ?
                 <input 
                     type={ type } name={ name } id={ id } placeholder={ placeholder } value={ value } onChange={ handler }
-                    className='text-sm py-1 w-full outline-none border-none' 
+                    className='text-sm text-secondary-500 py-1 w-full outline-none border-none' 
                 /> :
                 fieldType == "textarea" ? 
                 <textarea 
                     name={ name } id={ id } placeholder={ placeholder } rows={ 4 } value={ value } onChange={ handler } 
-                    className='w-full outline-none border-none resize-none' 
+                    className='w-full text-secondary-500 outline-none border-none resize-none' 
                 /> : 
                 fieldType == "dropdown" ? 
                 <select 
                     name={ name } id={ id } defaultValue={ value } onChange={ handler } 
-                    className='text-sm py-1 w-full outline-none border-none' 
+                    className='text-sm text-secondary-500 py-1 w-full outline-none border-none' 
                 >
                     <option value="0" disabled >Select { label }</option>
                     {

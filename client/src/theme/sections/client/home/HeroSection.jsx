@@ -12,10 +12,10 @@ const HeroSection = () => {
         <div className='flex flex-col md:flex-row items-center justify-between gap-5 w-full'>
             <div className='w-full md:w-1/3 flex flex-col items-start justify-start gap-10'>
               <p className='flex items-center justify-center gap-2 uppercase text-sm text-primary-500 font-semibold tracking-[5px]'>
-                <span className='flex items-center justify-center h-2.5 w-2.5 bg-red-600 rounded-xs' />
+                <span className='flex items-center justify-center h-2.5 w-2.5 bg-primary-500 rounded-xs' />
                 Share Your Videos
               </p>
-              <h1 className={ "text-4xl md:text-5xl lg:text-6xl font-medium" }>Create. <span className='text-primary-500'>Share.</span> Inspire.</h1>
+              <h1 className={ "text-zinc-600 text-4xl md:text-5xl lg:text-6xl font-medium" }>Create. <span className='text-primary-500'>Share.</span> Inspire.</h1>
               <p className={ "text-lg text-secondary-500" }>
                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus architecto repellendus, saepe consequuntur atque impedit
               </p>

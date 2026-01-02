@@ -11,7 +11,7 @@ const Auth = () => {
 
     return (
         <section 
-            className='flex flex-col items-center justify-center h-dvh px-5 sm:px-10 md:px-15 lg:px-25 xl:px-50 py-5 md:py-10 bg-primary-100'
+            className='flex flex-col items-center justify-center h-dvh px-5 sm:px-10 md:px-15 lg:px-25 xl:px-50 py-5 md:py-10 bg-primary-100 bg-cover bg-no-repeat'
             style={{ backgroundImage: `url( ${ Background } )` }}
         >
             <Alert response={ response } />

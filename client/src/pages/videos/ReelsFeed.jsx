@@ -99,8 +99,8 @@ const ReelsFeed = () => {
 
     return (
         <section 
-            className='w-full h-dvh flex items-start justify-between bg-black'
-            style={{ background: `url(${ Background })`}}
+            className='w-full h-dvh flex items-start justify-between bg-white bg-cover'
+            // style={{ background: `url(${ Background })`}}
         >
             { isLoading && <Loader message={ videos ? "Logging you out ..." : "Loading videos for you ..." } /> }
             {/* For Creators Only */}

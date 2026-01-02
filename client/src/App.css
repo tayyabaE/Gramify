@@ -3,8 +3,8 @@
 
 @theme {
   /* Theme Colors */
-  --color-primary-100: #f5f1f8;
-  --color-primary-500: #705cef;
+  --color-primary-100: #ecfff2;
+  --color-primary-500: #01d449;
 
   --color-secondary-500: #696969;
   
@@ -28,4 +28,8 @@
   85% { width: 85%; }
   95% { width: 90%; } 
   100% { width: 100%; }
+}
+
+div {
+  color: #ecfff2;
 }
