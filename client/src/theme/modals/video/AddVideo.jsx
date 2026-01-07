@@ -8,7 +8,7 @@ import AxiosInstance from '../../../services/AxiosInstance'
 
 const AddVideo = ({ setResponse, cancelHandler }) => {
 
-    const initValues = { title: "", description: "", genre: "0", mediaType: "video", file: "" }
+    const initValues = { title: "", description: "", genre: "0", video: "", file: "" }
     const [ formValues, setFormValues ] = useState({ ...initValues })
     const [ formErrors, setFormErrors ] = useState({})
     const [ isSubmit, setIsSubmit ] = useState(false)
@@ -23,7 +23,7 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
         })
     }
     
-    const fileHandler = (e) => {
+    const videoFileHandler = (e) => {
         const file = e.target.files[0]
         setFormErrors(validate({ ...formValues, file: file }))
         setFormValues({
@@ -41,54 +41,47 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
     const validate = (values) => {
         const errors = {}
 
-        const allowedVideoExtensions = ["mp4", "mkv", "3gp", "mov", "avi", "webm", "flv", "wmv", "m4v"]
-        const allowedImageExtensions = ["jpg", "jpeg", "png", "gif", "webp"]
+        const allowedExtensions = ["mp4", "mkv", "3gp", "mov", "avi", "webm", "flv", "wmv", "m4v"]
 
         if (!values.title) errors.title = "Title is required"
         if (!values.description) errors.description = "Description is required"
         if (!values.genre || values.genre == "0" || values.genre == 0) errors.genre = "Genre must be selected"
-        if (!values.file) errors.media = `${values.mediaType === "video" ? "Video" : "Image"} is required`
+        if (!values.file) errors.video = "Video is required"
         else {
             const fileExtension = values.file.name.split(".").pop().toLowerCase()
-            if (values.mediaType === "video" && !allowedVideoExtensions.includes(fileExtension)) {
-                errors.media = "Allowed video formats: .mp4/.mkv/.mov/.avi/.webm/.flv/.wmv/.m4v/.3gp"
-            } else if (values.mediaType === "image" && !allowedImageExtensions.includes(fileExtension)) {
-                errors.media = "Allowed image formats: .jpg/.jpeg/.png/.gif/.webp"
-            }
+            if (!allowedExtensions.includes(fileExtension)) errors.video = "Allowed formats are .mp4/.mkv/.mov/.avi/.webm/.flv/.wmv/.m4v/.3gp"
         }
 
         return errors
     }
 
     useEffect(() => {
-        if (Object.keys(formErrors).length === 0 && isSubmit) addMediaHandler()
+        if (Object.keys(formErrors).length === 0 && isSubmit) addVideoHandler()
         setIsSubmit(false)
     }, [formErrors])
 
-    const addMediaHandler = async () => {
+    const addVideoHandler = async (e) => {
         setIsLoading(true)
 
-        const folder = formValues.mediaType === "video" ? "/videos" : "/images"
-        const mediaResp = await Cloudinary(formValues.file, folder)
+        const videoResp = await Cloudinary(formValues.file, "/videos")
 
-        if (mediaResp.status === 500) {
+        if (videoResp.status === 500) {
             setIsLoading(false)
             return null
         }
 
         try {
-            const resp = await AxiosInstance.post("/api/video/add", { 
-                ...formValues, 
-                url: mediaResp.data.url 
-            })
-            setResponse({ message: `${formValues.mediaType === "video" ? "Video" : "Image"} Added Successfully` })
+            const resp = await AxiosInstance.post("/api/video/add", { ...formValues, url: videoResp.data.url })
+            setResponse({ message: "Video Added Successfully" })
             cancelHandler()
         } catch (err) {
             setResponse({ error: err })
         } finally {
             setIsLoading(false)
             setIsSubmit(false)
-            setTimeout(() => setResponse({}), 3000)
+            setTimeout(() => {
+                setResponse({})
+            }, 3000)
         }
     }
 
@@ -102,78 +95,63 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
         { text: "News & Commentary", value: "News & Commentary" },
         { text: "Motivational / Spiritual", value: "Motivational / Spiritual" },
     ]
+    
 
     return (
         <Fragment>
-            { isLoading && <Loader message={`Uploading your ${formValues.mediaType}...`} /> }
+            { isLoading && <Loader message={ "Uploading your video...." } /> }
             <form>
-                <FormHeader title={`Add a ${formValues.mediaType}`} />
-
-                {/* Media Type Selector */}
-                <FormField
-                    name="mediaType"
-                    id="mediaType"
-                    label="Media Type"
-                    fieldType="dropdown"
-                    options={[
-                        { text: "Video", value: "video" },
-                        { text: "Image", value: "image" }
-                    ]}
-                    value={formValues.mediaType}
-                    error={formErrors.mediaType}
-                    handler={inputHandler}
-                />
-
+                <FormHeader title={ "Add a Video" } />
                 <div className='w-full flex items-stretch justify-between gap-3'>
                     <FormField                 
-                        name="title"
-                        id="title"
-                        label="Title"
-                        placeholder="Title for your media..."
-                        type="text"
-                        fieldType="input"
-                        value={formValues.title}
-                        error={formErrors.title}
-                        handler={inputHandler}
+                        name={ "title" }
+                        id={ "title" }
+                        label={ "Title" }
+                        placeholder={ "Title for a video.." }
+                        type={ "text" }
+                        fieldType={ "input" }
+                        value={ formValues.title }
+                        error={ formErrors.title }
+                        handler={ inputHandler }
                     />
                     <FormField                 
-                        name="genre"
-                        id="genre"
-                        label="Genre"
-                        fieldType="dropdown"
-                        options={genreOptions}
-                        value={formValues.genre}
-                        error={formErrors.genre}
-                        handler={inputHandler}
+                        name={ "genre" }
+                        id={ "genre" }
+                        label={ "Genre" }
+                        fieldType={ "dropdown" }
+                        options={ genreOptions }
+                        value={ formValues.genre }
+                        error={ formErrors.genre }
+                        handler={ inputHandler }
                     />
                 </div>            
                 <FormField                 
-                    name="description"
-                    id="description"
-                    label="Description"
-                    placeholder="Description for your media..."
-                    fieldType="textarea"
-                    value={formValues.description}
-                    error={formErrors.description}
-                    handler={inputHandler}
+                    name={ "description" }
+                    id={ "description" }
+                    label={ "Description" }
+                    placeholder={ "Description for a video.." }
+                    fieldType={ "textarea" }
+                    value={ formValues.description }
+                    error={ formErrors.description }
+                    handler={ inputHandler }
                 />
                 <FormField                 
-                    name="media"
-                    id="media"
-                    label={formValues.mediaType === "video" ? "Video" : "Image"}
-                    fieldType="file"
-                    value={formValues?.file?.name}
-                    error={formErrors.media}
-                    fileHandler={fileHandler}
+                    name={ "video" }
+                    id={ "video" }
+                    label={ "Video" }
+                    fieldType={ "file" }
+                    value={ formValues?.file?.name }
+                    error={ formErrors.video }
+                    fileHandler={ videoFileHandler }
                 />
                 <div className='flex items-center justify-end gap-3 mt-5'>
                     <PrimaryButton 
-                        text="Cancel"
-                        handler={cancelHandler}
+                        text={ "Cancel" }
+                        handler={ cancelHandler }
                     />
                     <PrimaryButton 
-                        text="Submit"
-                        handler={submissionHandler}
+                        text={ "Submit" }
+                        handler={ submissionHandler }
                     />                
                 </div>
             </form>
