@@ -123,23 +123,26 @@ const ShortsContainer = ({ video, index, userInteracted }) => {
             <Alert response={ response } />
             <div className='w-full sm:w-auto relative h-dvh p-3 aspect-9/16 flex items-center justify-center'>
                 <div className='snap-center mx-auto rounded-xl overflow-hidden'>
-  {video.media.mediaType === "video" ? (
-    <video
-      ref={videoRef}
-      src={video.media.url} // updated
-      autoPlay
-      muted={isMuted}
-      playsInline
-      loop
-      onClick={muteToggler}
-    />
-  ) : (
-    <img
-      src={video.media.url} // updated
-      alt={video.title}
-      className="w-full h-full object-cover"
-    />
-  )}
+  {video.media?.mediaType === "video" ? (
+  <video
+    ref={videoRef}
+    src={video.media?.url} // safe access
+    autoPlay
+    muted={isMuted}
+    playsInline
+    loop
+    onClick={muteToggler}
+  />
+) : video.media?.mediaType === "image" ? (
+  <img
+    src={video.media?.url}
+    alt={video.title}
+    className="w-full h-full object-cover"
+  />
+) : (
+  <p className="text-center text-red-500">Media not available</p>
+)}
+
 
   {video.media.mediaType === "video" && (
     <Controls mute={{ isMuted, setIsMuted }} />

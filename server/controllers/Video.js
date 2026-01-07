@@ -69,17 +69,17 @@ router.get("/getAllRandom", getAuth, async (req, res) => {
             {   $unset: 'commentConsumers' },
             {
     $project: {
-        title: 1,
-        description: 1,
-        genre: 1,
-        media: 1,  // returns full media object: url, publicId, mediaType
-        'creator.fullName': 1,
-        'creator.username': 1,
-        likes: 1,
-        comments: 1,
-        views: 1,
-        createdAt: 1
-    }
+    title: 1,
+    description: 1,
+    genre: 1,
+    media: 1,  // this line is important
+    'creator.fullName': 1,
+    'creator.username': 1,
+    likes: 1,
+    comments: 1,
+    views: 1,
+    createdAt: 1
+}
 }
 
         ])
@@ -103,10 +103,13 @@ router.get("/getAllByCreator", getAuth, async (req, res) => {
         const { id } = req.user
 
         // Find all by creator
-        const videos = await Video.find({ creator: id })
-            .populate('creator', 'fullName username')
-            .populate('comments.consumer', 'fullName username')
-            .sort({ createdAt: -1 })
+        
+            const videos = await Video.find({ creator: id })
+    .populate('creator', 'fullName username')
+    .populate('comments.consumer', 'fullName username')
+    .select('title description genre media likes comments views createdAt')
+    .sort({ createdAt: -1 })
+
 
         // Returning response to the client
         return res.status(200).json(videos)
@@ -128,9 +131,11 @@ router.get("/getOne/:id", getAuth, async (req, res) => {
 
         // Find by id
         const video = await Video.findById(id)
-            .populate('creator', 'fullName username')
-            .populate('comments.consumer', 'fullName username')
-            .populate('likes.consumer', 'fullName username')
+    .populate('creator', 'fullName username')
+    .populate('comments.consumer', 'fullName username')
+    .populate('likes.consumer', 'fullName username')
+    .select('title description genre media likes comments views createdAt')
+
 
         // Returning response to the client
         return res.status(200).json(video)
