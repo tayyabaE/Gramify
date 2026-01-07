@@ -122,8 +122,8 @@ router.get("/getAllByCreator", getAuth, async (req, res) => {
 router.get("/getOne/:id", getAuth, async (req, res) => {
   try {
     // If not a consumer
-    if (req.user.role != 3)
-      return res.status(401).json("Not authorized to access");
+    // if (req.user.role != 3)
+    //   return res.status(401).json("Not authorized to access");
 
     // Destructuring id from request
     const { id } = req.params;
