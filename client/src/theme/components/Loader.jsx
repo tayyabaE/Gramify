@@ -17,7 +17,7 @@ const Loader = ({ message }) => {
                 </div>
                 <div className='relative z-1'>
                     <FaCloud className='text-primary-500 mx-auto' />
-                    <h2 className='relative z-1 text-primary-500 font-medium text-center mt-0.5'>cloudPlay</h2>
+                    <h2 className='relative z-1 text-primary-500 font-medium text-center mt-0.5'>gramify</h2>
                 </div>
             </div>
             <h3 className='text-sm text-secondary-500 font-medium'>{ message }</h3>

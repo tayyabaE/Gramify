@@ -8,7 +8,14 @@ import AxiosInstance from '../../../services/AxiosInstance'
 
 const AddVideo = ({ setResponse, cancelHandler }) => {
 
-    const initValues = { title: "", description: "", genre: "0", video: "", file: "" }
+    const initValues = { 
+    title: "", 
+    description: "", 
+    genre: "0", 
+    file: null,
+    mediaType: "" // "image" | "video"
+}
+
     const [ formValues, setFormValues ] = useState({ ...initValues })
     const [ formErrors, setFormErrors ] = useState({})
     const [ isSubmit, setIsSubmit ] = useState(false)
@@ -23,14 +30,20 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
         })
     }
     
-    const videoFileHandler = (e) => {
-        const file = e.target.files[0]
-        setFormErrors(validate({ ...formValues, file: file }))
-        setFormValues({
-            ...formValues,
-            file: file
-        })
-    }
+   const mediaFileHandler = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    const type = file.type.startsWith("image") ? "image" : "video"
+
+    setFormErrors(validate({ ...formValues, file, mediaType: type }))
+    setFormValues({
+        ...formValues,
+        file,
+        mediaType: type
+    })
+}
+
 
     const submissionHandler = (e) => {
         if (e) e.preventDefault()
@@ -39,21 +52,32 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
     }
 
     const validate = (values) => {
-        const errors = {}
+    const errors = {}
 
-        const allowedExtensions = ["mp4", "mkv", "3gp", "mov", "avi", "webm", "flv", "wmv", "m4v"]
+    const videoExt = ["mp4","mkv","3gp","mov","avi","webm","flv","wmv","m4v"]
+    const imageExt = ["jpg","jpeg","png","webp","gif"]
 
-        if (!values.title) errors.title = "Title is required"
-        if (!values.description) errors.description = "Description is required"
-        if (!values.genre || values.genre == "0" || values.genre == 0) errors.genre = "Genre must be selected"
-        if (!values.file) errors.video = "Video is required"
-        else {
-            const fileExtension = values.file.name.split(".").pop().toLowerCase()
-            if (!allowedExtensions.includes(fileExtension)) errors.video = "Allowed formats are .mp4/.mkv/.mov/.avi/.webm/.flv/.wmv/.m4v/.3gp"
+    if (!values.title) errors.title = "Title is required"
+    if (!values.description) errors.description = "Description is required"
+    if (!values.genre || values.genre === "0") errors.genre = "Genre must be selected"
+
+    if (!values.file) {
+        errors.video = "Media file is required"
+    } else {
+        const ext = values.file.name.split(".").pop().toLowerCase()
+
+        if (values.mediaType === "video" && !videoExt.includes(ext)) {
+            errors.video = "Invalid video format"
         }
 
-        return errors
+        if (values.mediaType === "image" && !imageExt.includes(ext)) {
+            errors.video = "Invalid image format"
+        }
     }
+
+    return errors
+}
+
 
     useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit) addVideoHandler()
@@ -63,7 +87,12 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
     const addVideoHandler = async (e) => {
         setIsLoading(true)
 
-        const videoResp = await Cloudinary(formValues.file, "/videos")
+       const mediaResp = await Cloudinary(
+    formValues.file,
+    formValues.mediaType === "image" ? "/images" : "/videos",
+    formValues.mediaType
+)
+
 
         if (videoResp.status === 500) {
             setIsLoading(false)
@@ -71,7 +100,14 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
         }
 
         try {
-            const resp = await AxiosInstance.post("/api/video/add", { ...formValues, url: videoResp.data.url })
+            const resp = await AxiosInstance.post("/api/video/add", {
+    title: formValues.title,
+    description: formValues.description,
+    genre: formValues.genre,
+    mediaUrl: mediaResp.data.url,
+    mediaPublicId: mediaResp.data.publicId,
+    mediaType: formValues.mediaType
+})
             setResponse({ message: "Video Added Successfully" })
             cancelHandler()
         } catch (err) {
@@ -136,14 +172,15 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
                     handler={ inputHandler }
                 />
                 <FormField                 
-                    name={ "video" }
-                    id={ "video" }
-                    label={ "Video" }
-                    fieldType={ "file" }
-                    value={ formValues?.file?.name }
-                    error={ formErrors.video }
-                    fileHandler={ videoFileHandler }
-                />
+    name="media"
+    id="media"
+    label="Video / Image"
+    fieldType="file"
+    value={formValues?.file?.name}
+    error={formErrors.video}
+    fileHandler={mediaFileHandler}
+/>
+
                 <div className='flex items-center justify-end gap-3 mt-5'>
                     <PrimaryButton 
                         text={ "Cancel" }

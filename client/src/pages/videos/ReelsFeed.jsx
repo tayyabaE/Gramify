@@ -112,7 +112,7 @@ const ReelsFeed = () => {
                 {
                     user && user.role == 2 &&
                     <PrimaryButton
-                        text={ "Add a Video" }
+                        text={ "Share a Post" }
                         handler={ getAddVideoModal }
                     />
                 }

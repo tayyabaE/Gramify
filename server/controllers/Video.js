@@ -140,47 +140,47 @@ router.get("/getOne/:id", getAuth, async (req, res) => {
     }
 })
 
-router.post("/add", 
-    getAuth, 
-    [
-        body('title', 'Title cannot be blank').exists(),
-        body('title', 'Title cannot be shorter than 5 characters').isLength({ min: 5 }),
-        body('description', 'Description cannot be blank').exists(),
-        body('description', 'Description cannot be shorter than 10 characters').isLength({ min: 10 }),
-        body('genre', 'Genre must be selected').exists(),
-        body('url', 'Url cannot be blank').exists(),
-    ],
-    async (req, res) => {
-        try {
-            // If not a creator
-            if (req.user.role != 2) return res.status(401).json("Not authorized to access")
+// router.post("/add", 
+//     getAuth, 
+//     [
+//         body('title', 'Title cannot be blank').exists(),
+//         body('title', 'Title cannot be shorter than 5 characters').isLength({ min: 5 }),
+//         body('description', 'Description cannot be blank').exists(),
+//         body('description', 'Description cannot be shorter than 10 characters').isLength({ min: 10 }),
+//         body('genre', 'Genre must be selected').exists(),
+//         body('url', 'Url cannot be blank').exists(),
+//     ],
+//     async (req, res) => {
+//         try {
+//             // If not a creator
+//             if (req.user.role != 2) return res.status(401).json("Not authorized to access")
 
-            // Find errors in request
-            const errors = validationResult(req)
-            if (!errors.isEmpty()) return res.status(400).json(errors.array())
+//             // Find errors in request
+//             const errors = validationResult(req)
+//             if (!errors.isEmpty()) return res.status(400).json(errors.array())
 
-            // Destructuring the request
-            const { title, description, genre, url } = req.body
-            const { id } = req.user
+//             // Destructuring the request
+//             const { title, description, genre, url } = req.body
+//             const { id } = req.user
 
-            // Add video
-            await Video.create({
-                title: title,
-                description: description,
-                genre: genre,
-                url: url,
-                creator: id
-            })
+//             // Add video
+//             await Video.create({
+//                 title: title,
+//                 description: description,
+//                 genre: genre,
+//                 url: url,
+//                 creator: id
+//             })
 
-            // Returning response to the client
-            return res.status(200).json("Video uploaded successfully !!")
+//             // Returning response to the client
+//             return res.status(200).json("Video uploaded successfully !!")
 
-        } catch (err) {
-            console.log(err)
-            return res.status(500).json("Internal Server Error")
-        }
-    }
-)
+//         } catch (err) {
+//             console.log(err)
+//             return res.status(500).json("Internal Server Error")
+//         }
+//     }
+// )
 
 // router.post("/add",
 //     getAuth,
@@ -229,6 +229,58 @@ router.post("/add",
 //     }
 // )
 // Like video. Using "/api/video/like/:id". Login required
+
+router.post(
+    "/add",
+    getAuth,
+    [
+        body('title').isLength({ min: 5 }),
+        body('description').isLength({ min: 10 }),
+        body('genre').exists(),
+        body('mediaUrl').exists(),
+        body('mediaPublicId').exists(),
+        body('mediaType').isIn(['video', 'image'])
+    ],
+    async (req, res) => {
+        try {
+            if (req.user.role != 2)
+                return res.status(401).json("Not authorized")
+
+            const errors = validationResult(req)
+            if (!errors.isEmpty())
+                return res.status(400).json(errors.array())
+
+            const {
+                title,
+                description,
+                genre,
+                mediaUrl,
+                mediaPublicId,
+                mediaType
+            } = req.body
+
+            await Video.create({
+                title,
+                description,
+                genre,
+                creator: req.user.id,
+                media: {
+                    url: mediaUrl,
+                    publicId: mediaPublicId,
+                    mediaType
+                }
+            })
+
+            return res.status(200).json("Media uploaded successfully ✅")
+
+        } catch (err) {
+            console.log(err)
+            return res.status(500).json("Internal Server Error")
+        }
+    }
+)
+
+
 router.put("/like/:id", getAuth, async (req, res) => {
     try {
         // If not a consumer
