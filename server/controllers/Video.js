@@ -192,7 +192,10 @@ router.post("/add",
         body('type', 'Type must be video or image').isIn(['video', 'image']),
         body('url', 'Url cannot be blank').exists(),
     ],
+    
     async (req, res) => {
+        console.log("USER:", req.user)
+
         console.log("REQ BODY:", req.body)
 
         try {
