@@ -140,7 +140,6 @@ router.get("/getOne/:id", getAuth, async (req, res) => {
     }
 })
 
-// Add video. Using "/api/video/add". Login required
 router.post("/add", 
     getAuth, 
     [
@@ -182,6 +181,7 @@ router.post("/add",
         }
     }
 )
+
 // router.post("/add",
 //     getAuth,
 //     [
