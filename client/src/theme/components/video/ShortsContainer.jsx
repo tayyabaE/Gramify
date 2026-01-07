@@ -123,15 +123,45 @@ const ShortsContainer = ({ video, index, userInteracted }) => {
             <Alert response={ response } />
             <div className='w-full sm:w-auto relative h-dvh p-3 aspect-9/16 flex items-center justify-center'>
                 <div className='snap-center mx-auto rounded-xl overflow-hidden'>
-                    <video ref={ videoRef } src={ video.url } autoPlay muted={ isMuted } playsInline loop onClick={ muteToggler } ></video>
-                    <Controls mute={{ isMuted, setIsMuted }} />
-                    <div className='absolute w-full p-5 left-1/2 -translate-x-1/2 bottom-0 bg-linear-0 to-primary-100/0 from-primary-100/90 from-65%'>
-                        <h3 className='text-primary-500 text-xl font-bold mt-5'>{ "@"+video.creator.username }</h3>
-                        <h3 className='text-black text-lg mt-2'>{ video.title }</h3>
-                        <p className='text-black/65 mt-1 w-[70%]'>{ renderDescription(video.description) }</p>
-                    </div>
-                    <Meta video={ video } setResponse={ setResponse } triggerCommentSection={ triggerCommentSection } />
-                </div>
+  {video.media.mediaType === "video" ? (
+    <video
+      ref={videoRef}
+      src={video.media.url} // updated
+      autoPlay
+      muted={isMuted}
+      playsInline
+      loop
+      onClick={muteToggler}
+    />
+  ) : (
+    <img
+      src={video.media.url} // updated
+      alt={video.title}
+      className="w-full h-full object-cover"
+    />
+  )}
+
+  {video.media.mediaType === "video" && (
+    <Controls mute={{ isMuted, setIsMuted }} />
+  )}
+
+  <div className='absolute w-full p-5 left-1/2 -translate-x-1/2 bottom-0 bg-linear-0 to-primary-100/0 from-primary-100/90 from-65%'>
+    <h3 className='text-primary-500 text-xl font-bold mt-5'>
+      { "@"+video.creator.username }
+    </h3>
+    <h3 className='text-black text-lg mt-2'>{ video.title }</h3>
+    <p className='text-black/65 mt-1 w-[70%]'>
+      { renderDescription(video.description) }
+    </p>
+  </div>
+
+  <Meta
+    video={video}
+    setResponse={setResponse}
+    triggerCommentSection={triggerCommentSection}
+  />
+</div>
+
             </div>
             <CommentSection video={ video } id={ video.id } comments={ video.comments } isOpened={ isOpened } setResponse={ setResponse } triggerCommentSection={ triggerCommentSection } />
         </div>

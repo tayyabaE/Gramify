@@ -102,7 +102,7 @@ const ReelsFeed = () => {
             className='w-full h-dvh flex items-start justify-between bg-white bg-cover'
             // style={{ background: `url(${ Background })`}}
         >
-            { isLoading && <Loader message={ videos ? "Logging you out ..." : "Loading videos for you ..." } /> }
+            { isLoading && <Loader message={ videos ? "Logging you out ..." : "Loading posts for you ..." } /> }
             {/* For Creators Only */}
             <div className='z-50 flex items-stretch justify-start gap-2.5 fixed p-5'>
                 <PrimaryButton
