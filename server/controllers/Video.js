@@ -141,47 +141,44 @@ router.get("/getOne/:id", getAuth, async (req, res) => {
 })
 
 // Add video. Using "/api/video/add". Login required
-router.post("/add", 
-    getAuth, 
+router.post("/add",
+    getAuth,
     [
-        body('title', 'Title cannot be blank').exists(),
-        body('title', 'Title cannot be shorter than 5 characters').isLength({ min: 5 }),
-        body('description', 'Description cannot be blank').exists(),
-        body('description', 'Description cannot be shorter than 10 characters').isLength({ min: 10 }),
-        body('genre', 'Genre must be selected').exists(),
-        body('url', 'Url cannot be blank').exists(),
+        body('title').isLength({ min: 5 }),
+        body('description').isLength({ min: 10 }),
+        body('genre').exists(),
+        body('url').exists(),
+        body('mediaType').isIn(['video', 'image'])
     ],
     async (req, res) => {
         try {
-            // If not a creator
-            if (req.user.role != 2) return res.status(401).json("Not authorized to access")
+            if (req.user.role != 2)
+                return res.status(401).json("Not authorized")
 
-            // Find errors in request
             const errors = validationResult(req)
-            if (!errors.isEmpty()) return res.status(400).json(errors.array())
+            if (!errors.isEmpty())
+                return res.status(400).json(errors.array())
 
-            // Destructuring the request
-            const { title, description, genre, url } = req.body
-            const { id } = req.user
+            const { title, description, genre, url, mediaType } = req.body
 
-            // Add video
-            await Video.create({
-                title: title,
-                description: description,
-                genre: genre,
-                url: url,
-                creator: id
+            await Post.create({
+                title,
+                description,
+                genre,
+                url,
+                mediaType,
+                creator: req.user.id
             })
 
-            // Returning response to the client
-            return res.status(200).json("Video uploaded successfully !!")
+            res.status(200).json("Post uploaded successfully")
 
         } catch (err) {
             console.log(err)
-            return res.status(500).json("Internal Server Error")
+            res.status(500).json("Internal Server Error")
         }
     }
 )
+
 
 // Like video. Using "/api/video/like/:id". Login required
 router.put("/like/:id", getAuth, async (req, res) => {

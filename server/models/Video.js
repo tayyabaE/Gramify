@@ -10,20 +10,30 @@ const CommentSchema = new Schema({
     consumer: { type: Schema.Types.ObjectId, ref: 'user', required: true }
 }, { timestamps: true })
 
-const VideoSchema = new Schema({
+const PostSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     genre: { type: String, required: true },
-    likes: [ LikeSchema ],
-    comments: [ CommentSchema ],
+
+    mediaType: { 
+        type: String, 
+        enum: ['video', 'image'], 
+        required: true 
+    },
+
+    url: { type: String, required: true }, // video OR image URL
+
+    likes: [LikeSchema],
+    comments: [CommentSchema],
     views: { type: Number, default: 0 },
+
     creator: { type: Schema.Types.ObjectId, ref: 'user', required: true },
-    url: { type: String, required: true },
     status: { type: Number, default: 1 }
+
 }, { timestamps: true })
 
-const Video = mongoose.model('video', VideoSchema)
-module.exports = Video
+module.exports = mongoose.model('post', PostSchema)
+
 
 // Status
 // 1 - Public
