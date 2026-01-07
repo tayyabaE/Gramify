@@ -72,7 +72,7 @@ const Login = ({ setResponse, setIsLogin }) => {
                 className="w-max flex items-center justify-start gap-3 text-2xl text-primary-500 font-bold mx-auto mb-4"
             >
                 <FaCloud />
-                cloudPlay
+                gramify
             </Link>
             <form className='flex flex-col items-end justify-end'>
                 <FormField

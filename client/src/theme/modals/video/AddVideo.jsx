@@ -94,7 +94,7 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
 )
 
 
-        if (videoResp.status === 500) {
+        if (mediaResp.status === 500) {
             setIsLoading(false)
             return null
         }

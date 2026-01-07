@@ -271,7 +271,7 @@ router.post(
                 }
             })
 
-            return res.status(200).json("Media uploaded successfully ✅")
+            return res.status(200).json("Media uploaded successfully")
 
         } catch (err) {
             console.log(err)
