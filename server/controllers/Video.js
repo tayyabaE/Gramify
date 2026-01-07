@@ -8,7 +8,7 @@ const router = express.Router()
 router.get("/getAllRandom", getAuth, async (req, res) => {
     try {
         // If not a consumer
-        if (req.user.role != 3) return res.status(401).json("Not authorized to access")
+        //if (req.user.role != 3) return res.status(401).json("Not authorized to access")
 
         // Find all videos and return
         const videos = await Video.aggregate([
