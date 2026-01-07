@@ -141,93 +141,93 @@ router.get("/getOne/:id", getAuth, async (req, res) => {
 })
 
 // Add video. Using "/api/video/add". Login required
-// router.post("/add", 
-//     getAuth, 
-//     [
-//         body('title', 'Title cannot be blank').exists(),
-//         body('title', 'Title cannot be shorter than 5 characters').isLength({ min: 5 }),
-//         body('description', 'Description cannot be blank').exists(),
-//         body('description', 'Description cannot be shorter than 10 characters').isLength({ min: 10 }),
-//         body('genre', 'Genre must be selected').exists(),
-//         body('url', 'Url cannot be blank').exists(),
-//     ],
-//     async (req, res) => {
-//         try {
-//             // If not a creator
-//             if (req.user.role != 2) return res.status(401).json("Not authorized to access")
-
-//             // Find errors in request
-//             const errors = validationResult(req)
-//             if (!errors.isEmpty()) return res.status(400).json(errors.array())
-
-//             // Destructuring the request
-//             const { title, description, genre, url } = req.body
-//             const { id } = req.user
-
-//             // Add video
-//             await Video.create({
-//                 title: title,
-//                 description: description,
-//                 genre: genre,
-//                 url: url,
-//                 creator: id
-//             })
-
-//             // Returning response to the client
-//             return res.status(200).json("Video uploaded successfully !!")
-
-//         } catch (err) {
-//             console.log(err)
-//             return res.status(500).json("Internal Server Error")
-//         }
-//     }
-// )
-router.post("/add",
-    getAuth,
+router.post("/add", 
+    getAuth, 
     [
         body('title', 'Title cannot be blank').exists(),
         body('title', 'Title cannot be shorter than 5 characters').isLength({ min: 5 }),
         body('description', 'Description cannot be blank').exists(),
         body('description', 'Description cannot be shorter than 10 characters').isLength({ min: 10 }),
-        body('type', 'Type must be video or image').isIn(['video', 'image']),
+        body('genre', 'Genre must be selected').exists(),
         body('url', 'Url cannot be blank').exists(),
     ],
-    
     async (req, res) => {
-        console.log("USER:", req.user)
-
-        console.log("REQ BODY:", req.body)
-
         try {
+            // If not a creator
             if (req.user.role != 2) return res.status(401).json("Not authorized to access")
-console.log("REQ BODY:", req.body)
 
+            // Find errors in request
             const errors = validationResult(req)
             if (!errors.isEmpty()) return res.status(400).json(errors.array())
 
-            const { title, description, type, url, genre } = req.body
+            // Destructuring the request
+            const { title, description, genre, url } = req.body
             const { id } = req.user
 
-            await Media.create({
-                title,
-                description,
-                type,
-                url,
-                genre: type === 'video' ? genre : undefined, // genre only for videos
+            // Add video
+            await Video.create({
+                title: title,
+                description: description,
+                genre: genre,
+                url: url,
                 creator: id
             })
 
-            console.log("REQ BODY:", req.body)
+            // Returning response to the client
+            return res.status(200).json("Video uploaded successfully !!")
 
-            return res.status(200).json(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully !!`)
         } catch (err) {
             console.log(err)
-            console.log("REQ BODY:", req.body)
-
             return res.status(500).json("Internal Server Error")
         }
     }
 )
+// router.post("/add",
+//     getAuth,
+//     [
+//         body('title', 'Title cannot be blank').exists(),
+//         body('title', 'Title cannot be shorter than 5 characters').isLength({ min: 5 }),
+//         body('description', 'Description cannot be blank').exists(),
+//         body('description', 'Description cannot be shorter than 10 characters').isLength({ min: 10 }),
+//         body('type', 'Type must be video or image').isIn(['video', 'image']),
+//         body('url', 'Url cannot be blank').exists(),
+//     ],
+    
+//     async (req, res) => {
+//         console.log("USER:", req.user)
+
+//         console.log("REQ BODY:", req.body)
+
+//         try {
+//             if (req.user.role != 2) return res.status(401).json("Not authorized to access")
+// console.log("REQ BODY:", req.body)
+
+//             const errors = validationResult(req)
+//             if (!errors.isEmpty()) return res.status(400).json(errors.array())
+
+//             const { title, description, type, url, genre } = req.body
+//             const { id } = req.user
+
+//             await Media.create({
+//                 title,
+//                 description,
+//                 type,
+//                 url,
+//                 genre: type === 'video' ? genre : undefined, // genre only for videos
+//                 creator: id
+//             })
+
+//             console.log("REQ BODY:", req.body)
+
+//             return res.status(200).json(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully !!`)
+//         } catch (err) {
+//             console.log(err)
+//             console.log("REQ BODY:", req.body)
+
+//             return res.status(500).json("Internal Server Error")
+//         }
+//     }
+// )
 // Like video. Using "/api/video/like/:id". Login required
 router.put("/like/:id", getAuth, async (req, res) => {
     try {
