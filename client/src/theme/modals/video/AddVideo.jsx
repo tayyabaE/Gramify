@@ -87,12 +87,23 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
                 genre: formValues.type === "video" ? formValues.genre : undefined
             }
 
-            
+            if (!mediaResp?.data?.url) {
+    setResponse({ error: "Upload failed. Please try again." })
+    setIsLoading(false)
+    return
+}
+
             const resp = await AxiosInstance.post("/api/video/add", payload)
             setResponse({ message: `${formValues.type.charAt(0).toUpperCase() + formValues.type.slice(1)} Added Successfully` })
             cancelHandler()
         } catch (err) {
-            setResponse({ error: err })
+    const msg =
+        err?.response?.data?.[0]?.msg ||
+        err?.response?.data ||
+        "Something went wrong"
+
+    setResponse({ error: msg })
+
         } finally {
             setIsLoading(false)
             setIsSubmit(false)

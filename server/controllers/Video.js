@@ -193,8 +193,11 @@ router.post("/add",
         body('url', 'Url cannot be blank').exists(),
     ],
     async (req, res) => {
+        console.log("REQ BODY:", req.body)
+
         try {
             if (req.user.role != 2) return res.status(401).json("Not authorized to access")
+console.log("REQ BODY:", req.body)
 
             const errors = validationResult(req)
             if (!errors.isEmpty()) return res.status(400).json(errors.array())
@@ -211,9 +214,13 @@ router.post("/add",
                 creator: id
             })
 
+            console.log("REQ BODY:", req.body)
+
             return res.status(200).json(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully !!`)
         } catch (err) {
             console.log(err)
+            console.log("REQ BODY:", req.body)
+
             return res.status(500).json("Internal Server Error")
         }
     }
