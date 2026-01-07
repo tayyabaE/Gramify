@@ -87,7 +87,8 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
                 genre: formValues.type === "video" ? formValues.genre : undefined
             }
 
-            const resp = await AxiosInstance.post("/api/media/add", payload)
+            
+            const resp = await AxiosInstance.post("/api/video/add", payload)
             setResponse({ message: `${formValues.type.charAt(0).toUpperCase() + formValues.type.slice(1)} Added Successfully` })
             cancelHandler()
         } catch (err) {
