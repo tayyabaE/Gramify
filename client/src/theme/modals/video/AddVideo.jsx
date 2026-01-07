@@ -70,7 +70,7 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
     const addMediaHandler = async () => {
         setIsLoading(true)
 
-        const folder = formValues.type === "video" ? "/videos" : "/images"
+        const folder = formValues.type === "video" ? "videos" : "images"
         const mediaResp = await Cloudinary(formValues.file, folder)
 
         if (mediaResp.status === 500) {
