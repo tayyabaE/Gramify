@@ -6,16 +6,21 @@ const cloudinary = require("cloudinary").v2
 router.post('/genSignature', (req, res) => {
     try {
         const timestamp = Math.round((new Date()).getTime() / 1000)
-        const { folderName } = req.body
-        
+        let { folderName } = req.body
+
+        // Validate folderName
+        if (!["videos", "images"].includes(folderName)) {
+            return res.status(400).json("Invalid folder name. Must be 'videos' or 'images'.")
+        }
+
         const params_to_sign = {
             timestamp: timestamp,
             upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
-            folder: `cloudplay/${ folderName }`
+            folder: `cloudplay/${folderName}`
         }
-    
+
         const signature = cloudinary.utils.api_sign_request(params_to_sign, process.env.CLOUDINARY_APISECRET)
-        
+
         return res.status(200).json({
             signature: signature,
             timestamp: timestamp,
