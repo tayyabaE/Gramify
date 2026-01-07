@@ -11,7 +11,7 @@ const Header = () => {
                 className="flex items-center justify-start gap-3 text-2xl text-primary-500 font-bold"
             >
                 <FaCloud />
-                cloudPlay
+                gramify
             </Link>
             <nav></nav>
             <PrimaryButton 
