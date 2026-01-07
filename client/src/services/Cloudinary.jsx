@@ -22,10 +22,12 @@ export const Cloudinary = async (file, folderName) => {
         formData.append("folder", `cloudplay/${folderName}`)
 
         // 3️⃣ AUTO upload (IMPORTANT)
+       
+
         const resp = await axios.post(
-            `https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/auto/upload`,
-            formData
-        )
+    `https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/auto/upload`,
+    formData
+)
 
         return {
             status: resp.status,
