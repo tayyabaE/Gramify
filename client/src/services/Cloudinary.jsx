@@ -8,28 +8,45 @@ const CloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_NAME
 export const Cloudinary = async (file, folderName, mediaType) => {
     const resourceType = mediaType === 'image' ? 'image' : 'video'
 
+    // Get signature from backend
+    let params = {}
+    try {
+        const signResp = await AxiosInstance.post('/api/cloudinary/genSignature', { folderName })
+        const { signature, timestamp, apiKey } = signResp.data
+        params = { signature, timestamp, apiKey }
+    } catch (err) {
+        console.error("Error generating Cloudinary signature", err)
+        return { status: 500 }
+    }
+
+    // Upload to Cloudinary
     const formData = new FormData()
     formData.append('file', file)
     formData.append('api_key', params.apiKey)
     formData.append('timestamp', params.timestamp)
     formData.append('signature', params.signature)
-    formData.append('upload_preset', CloudinaryUploadPreset)
+    formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET)
     formData.append('folder', `cloudplay/${folderName}`)
 
-    const resp = await axios.post(
-        `https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/${resourceType}/upload`,
-        formData
-    )
-
-    return {
-        status: resp.status,
-        data: {
-            url: resp.data.secure_url,
-            publicId: resp.data.public_id,
-            mediaType
+    try {
+        const resp = await axios.post(
+            `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_NAME}/${resourceType}/upload`,
+            formData
+        )
+        return {
+            status: resp.status,
+            data: {
+                url: resp.data.secure_url,
+                publicId: resp.data.public_id,
+                mediaType
+            }
         }
+    } catch (err) {
+        console.error("Cloudinary upload failed:", err)
+        return { status: 500 }
     }
 }
+
 
 
 // export const Cloudinary = async (video, folderName) => {

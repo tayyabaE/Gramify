@@ -135,15 +135,15 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
 
     return (
         <Fragment>
-            { isLoading && <Loader message={ "Uploading your video...." } /> }
+            { isLoading && <Loader message={ "Uploading your post...." } /> }
             <form>
-                <FormHeader title={ "Add a Video" } />
+                <FormHeader title={ "Add a Post" } />
                 <div className='w-full flex items-stretch justify-between gap-3'>
                     <FormField                 
                         name={ "title" }
                         id={ "title" }
                         label={ "Title" }
-                        placeholder={ "Title for a video.." }
+                        placeholder={ "Title for the post.." }
                         type={ "text" }
                         fieldType={ "input" }
                         value={ formValues.title }
@@ -165,7 +165,7 @@ const AddVideo = ({ setResponse, cancelHandler }) => {
                     name={ "description" }
                     id={ "description" }
                     label={ "Description" }
-                    placeholder={ "Description for a video.." }
+                    placeholder={ "Description comes here.." }
                     fieldType={ "textarea" }
                     value={ formValues.description }
                     error={ formErrors.description }
