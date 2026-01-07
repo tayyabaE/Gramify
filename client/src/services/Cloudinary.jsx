@@ -25,7 +25,7 @@ export const Cloudinary = async (file, folderName) => {
 
         // 3️⃣ AUTO upload (works for image + video)
         const resp = await axios.post(
-            `https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/auto/upload`,
+            `https://api.cloudinary.com/v1_1/${CloudinaryCloudName}/video/upload`,
             formData
         )
 
